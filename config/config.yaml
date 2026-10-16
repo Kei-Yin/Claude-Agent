@@ -1,0 +1,64 @@
+# MyClaude 全局配置文件
+# 修改后重启生效
+
+# model api_key 配置文件，换到model_key.yaml
+
+# 模型交互基本参数
+model_chat:
+  initial_max_tokens: 90000  # 单次请求 token 上限，初始化值（如果与 LLM 交互失败，重试的时候，还会增加这个值）
+  max_retries: 3             # 与 LLM 交互，如果失败，重试次数
+  max_tokens_limit: 640000   # 单次请求 token 上限，最终值（不会比这个更高的）
+  temperature: 0.3           # 创造性程度
+
+# 工具解析配置（独立于模型，与具体模型解耦）
+tool_parse:
+  from_reasoning: False      # 是否在 content 未解析到工具时，从 reasoning_content 宽松匹配工具标签
+
+# 记忆系统存储配置
+memory:
+  backend: "memory_ex"                                # 记忆后端: memory_ex / none
+
+# 项目基本目录结构
+base_path:
+  project_root: "D:/AI/MyClaude/"           # 项目根目录
+  code_output_root: "D:/AI/MyClaude/src/"   # AI 生成代码的默认输出目录
+  logs_root: "D:/AI/MyClaude/log/"          # log默认输出目录
+  backups_root: "D:/AI/MyClaude/backups/"   # 备份根目录
+  spec_root: "D:/AI/MyClaude/spec/"         # 需求规格根目录
+  skill_root: "D:/AI/MyClaude/skill/"       # skill根目录
+
+# 命令行界面配置
+cli:
+  theme: "monokai"        # rich 主题风格
+  typewriter_delay: 0.005 # 打字机效果延迟（秒），0 为关闭
+  max_turns: 500           # 工具调用最大轮次
+  show_thinking: False    # 是否显示 <thinking> 内容
+
+# 斜杠命令系统配置
+command:
+  cmd_dir: ".myclaude/commands"    # 命令目录名（相对于项目根目录）
+  auto_scan: true         # 启动时自动扫描
+  profile: "core"         # 工作流模式：core 或 expanded
+
+# API 兼容性约束
+api_constraints:
+  system_role_only_at_start:
+    providers: ["minimax"]  # 哪些 provider 限制 system 角色只能出现在消息列表首位
+
+# log配置
+log:
+  format: "html"   # 可选 "md" 或 "html"
+
+# 互联网搜索工具配置（参数类；密钥在 model_key.yaml 的 web_search 段）
+web_search:
+  enabled: true          # 功能总开关（true=启用联网搜索）
+  trigger_mode: private  # 触发模式: auto=LLM自主 / explicit=仅用户明确要求 / private=自主但query仅限通用词汇
+  sensitive_words: []    # 额外受保护词汇（query命中即拒绝），如 ["MyClaude", "某内部项目名"]
+  max_results: 5          # 默认返回条数
+  timeout: 10             # HTTP 超时（秒）
+  max_retries: 2          # 失败重试次数（指数退避）
+  cache_ttl: 3600         # 搜索结果本地缓存有效期（秒），0 为禁用缓存
+  token_budget: 3000      # 单次结果注入的 token 预算
+  min_interval: 2.0       # 两次真实搜索的最小间隔（秒），防止刷配额
+  fallback_model: "glm-4-flash"  # zhipu 降级链路 chat 模型（主搜索接口无召回时自动降级，403修复）
+  fallback_max_results: 5        # 降级链路最多提取的结果条数
