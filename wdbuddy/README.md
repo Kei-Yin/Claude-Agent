@@ -49,6 +49,21 @@ wdbuddy/
 
 ## 开发
 
+Windows PowerShell 首次准备（需要 Node.js >= 20.11；与 Python/conda 环境无关）：
+
+```powershell
+cd D:\HKU\Project\MyClaude\wdbuddy
+npm.cmd install --global pnpm@9.12.3
+pnpm.cmd install --frozen-lockfile
+node scripts/rebuild-electron-natives.mjs
+# 使用 PPT 模板预览/克隆时，在同一终端的 Python 环境中安装
+python -m pip install python-pptx
+.\start.bat
+```
+
+之后直接运行 `.\start.bat`。脚本调用 `pnpm.cmd`，避免 PowerShell 对 `pnpm.ps1` 的执行策略限制。
+若出现“无法将 pnpm 识别为命令”，先执行上面的全局安装命令；不需要重建 conda 环境。
+
 ```bash
 # 安装依赖（仓库声明 pnpm 9.12.3；Node.js >= 20.11）
 pnpm install --frozen-lockfile
