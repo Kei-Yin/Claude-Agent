@@ -5,6 +5,7 @@
  * 由 turbo.json 的 dependsOn: ["^build"] 保证顺序。
  */
 import { spawn } from "node:child_process";
+import { copyFileSync, cpSync } from "node:fs";
 
 const isWin = process.platform === "win32";
 const pkgManager = isWin ? "pnpm.cmd" : "pnpm";
@@ -20,6 +21,9 @@ function exec(cmd, args) {
 
 async function main() {
   await exec(pkgManager, ["exec", "turbo", "run", "build", "--concurrency=4"]);
+  // tsc 不复制 HTML/CSS/SQL；生产窗口和数据库从 desktop/dist 加载这些资源。
+  cpSync("apps/renderer/dist", "apps/desktop/dist/renderer", { recursive: true });
+  copyFileSync("apps/desktop/src/main/db/schema.sql", "apps/desktop/dist/main/db/schema.sql");
   console.log("[build] ✅ 全部构建完成");
 }
 

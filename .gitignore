@@ -62,6 +62,7 @@ memory_storage/memory_ex/raw_memory/*
 
 # 跨语言通用噪声（无前导斜杠，对任意层级生效，含嵌套子项目如 wdbuddy）
 node_modules/
+.pnpm-store/
 dist/
 *.log
 
