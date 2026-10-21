@@ -230,12 +230,12 @@ def stream_chat(msg, max_tokens=global_cfg.model_chat.initial_max_tokens):
                     # 非正常结束，给出原因提示（stop 是最健康的信号，不添加额外文字）
                     full_content += f"\n\n[流结束原因: {choice.finish_reason}]"
 
-    except APIError as e:
-        # 内容安全拦截、账号异常等
-        error_body = getattr(e, 'body', str(e))
-        return f"[API_ERROR: {error_body}]", is_truncated, "", None
     except (APIConnectionError, RateLimitError) as e:
         return f"[API_ERROR: 网络/限流问题，{e}]", is_truncated, "", None
+    except APIError as e:
+        # body 可能为 None，此时仍保留 SDK 的错误信息。
+        error_body = getattr(e, 'body', None) or str(e)
+        return f"[API_ERROR: {error_body}]", is_truncated, "", None
     except Exception as e:
         # 兜底异常（例如流读取过程中意外中断）
         return f"[API_ERROR: 流式读取异常，{e}]", is_truncated, "", None

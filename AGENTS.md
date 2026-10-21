@@ -69,8 +69,9 @@ Tools parsed from LLM output via regex in `src/llm_tool/tool_executor.py`:
 
 ## Git
 
-- `origin` → Gitee, `github` → GitHub
-- Push: `git push` (default Gitee), `git push github master`
+- `origin` → GitHub (`https://github.com/Kei-Yin/Claude-Agent.git`)，当前默认分支为 `main`
+- 用户要求：每次更新完成并通过相关验证后，提交并推送到 Git，保留可回滚的提交；默认使用 `git push origin main`，不强制推送
+- `config/model_key.yaml` 是本地密钥文件，不得提交；共享配置使用无密钥的 `config/model_key.example.yaml`
 - `log/`, `code_output/`, `context/`, `spec/`, `memory_storage/`, `tests/` content gitignored (dirs preserved via `.gitkeep`)
 
 ## A2A_EX Subsystem

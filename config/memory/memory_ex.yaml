@@ -1,6 +1,6 @@
 memory_ex:
   storage:
-    base_dir: "D:/AI/MyClaude/memory_storage/memory_ex/"
+    base_dir: "memory_storage/memory_ex"
     layer1_file: "memory/MEMORY.md"
     metadata_file: "memory/metadata.json"
 

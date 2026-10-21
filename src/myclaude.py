@@ -130,8 +130,7 @@ def main():
     if args.test_mode:
         from src.cli.mycli import MyClaudeCLI
         cli = MyClaudeCLI(role=args.role)
-        cli.run_test_mode(args.prompt, test_output_path=args.test_output)
-        return
+        sys.exit(cli.run_test_mode(args.prompt, test_output_path=args.test_output))
 
     # 交互模式：先显示欢迎页面，再在 spinner 动画下加载模块
     _print_welcome()

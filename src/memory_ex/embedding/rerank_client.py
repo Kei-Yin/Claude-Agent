@@ -1,4 +1,3 @@
-<![CDATA[
 """Rerank 模型客户端。
 
 封装 rerank 模型 API 调用，输入查询 + 候选文档列表，返回带分数的排序结果。
@@ -155,4 +154,3 @@ class RerankClient:
         # 按 score 降序排列
         parsed.sort(key=lambda x: x["score"], reverse=True)
         return parsed
-]]>

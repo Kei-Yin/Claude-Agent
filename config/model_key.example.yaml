@@ -1,0 +1,70 @@
+# 复制为 model_key.yaml 并填写真实密钥；不要提交本地密钥文件。
+GPT:
+  api_key: ''
+  base_url: https://api.openai.com/v1
+  model_name: gpt-5.5
+GLM-main:
+  api_key: ''
+  base_url: https://open.bigmodel.cn/api/coding/paas/v4
+  model_name: glm-5.3
+  extra_body:
+    thinking:
+      type: enabled
+GLM-5.2:
+  api_key: ''
+  base_url: https://open.bigmodel.cn/api/coding/paas/v4
+  model_name: glm-5.2
+  extra_body:
+    thinking:
+      type: enabled
+GLM-4-FLASH:
+  api_key: ''
+  base_url: https://open.bigmodel.cn/api/coding/paas/v4
+  model_name: glm-4-flash
+GLM-Embedding:
+  api_key: ''
+  base_url: https://open.bigmodel.cn/api/paas/v4/embeddings
+  model_name: embedding-3
+DeepSeek:
+  api_key: ''
+  base_url: https://api.deepseek.com
+  model_name: deepseek-v4-pro
+DeepSeek-Flash:
+  api_key: ''
+  base_url: https://api.deepseek.com
+  model_name: deepseek-v4-flash
+MiniMax:
+  api_key: ''
+  base_url: https://api.minimaxi.com/v1
+  model_name: MiniMax-M2.7
+Qwen-2.5:
+  api_key: ''
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  model_name: qwen2.5-7b-instruct
+web_search:
+  provider: zhipu
+  api_key: ''
+  base_url: https://open.bigmodel.cn/api/paas/v4/tools
+main_model:
+  provider: DeepSeek
+memory:
+  embedding:
+    enabled: 'True'
+    provider: GLM-Embedding
+    dim: '2048'
+    batch_size: '100'
+  llm_re_ranking:
+    provider: GLM-5.2
+    extra_body:
+      thinking:
+        type: disabled
+  rerank_re_ranking:
+    provider: GLM-5.2
+    extra_body:
+      thinking:
+        type: disabled
+simple_chat:
+  provider: GLM-5.2
+  extra_body:
+    thinking:
+      type: disabled

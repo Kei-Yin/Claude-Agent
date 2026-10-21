@@ -43,6 +43,7 @@ class QueryLoop:
         self.max_turns = 0
         self.is_multi_turns = None
         self._query_counter = 0
+        self.last_error = None
 
         # 通过工厂函数创建记忆实例（根据 config.yaml memory.backend 选择后端）
         self._init_memory()
@@ -203,6 +204,7 @@ class QueryLoop:
         """
         turn = 0
         quit_chat = ChatOrNot.Continue
+        self.last_error = None
 
         self._query_counter += 1
         self.session.start_query(self._query_counter, user_input)
@@ -281,6 +283,15 @@ class QueryLoop:
                         "content": "[上下文超限熔断] API 返回 Prompt 超长错误，强制终止本 Turn"
                     })
                     quit_chat = ChatOrNot.QuitByNoneTool
+                    self.last_error = ai_response
+                    break
+
+                # API 错误不是模型回答；停止本次 Query，避免当成缺少工具继续追问。
+                if ai_response.startswith("[API_ERROR:"):
+                    self.last_error = ai_response
+                    self.session.log_llm_rsp(ai_response)
+                    self._print_info(ai_response)
+                    quit_chat = ChatOrNot.QuitByNoneTool
                     break
 
             """2. 解构 LLM response"""
@@ -301,6 +312,7 @@ class QueryLoop:
 
         # 退出了循环
         if turn >= self.max_turns and quit_chat == ChatOrNot.Continue:  # 这种情况表明，实际上LLM并没有找到正确答案，但是，强制退出了
+            self.last_error = f"达到最大轮次限制 ({self.max_turns})，任务未完成"
             self._print_info(f"达到最大轮次限制 ({self.max_turns})，强制结束")
         # 否则的话，就是正常退出，这里不用打印任何信息
 
@@ -897,6 +909,7 @@ class QueryLoop:
 
         current_sig = "|".join(_sig_of(t) for t in exec_tools) if exec_tools else None
         if current_sig is not None and current_sig == self._last_tool_sig:
+            self.last_error = "连续两轮调用完全相同的工具，任务已熔断，未完成"
             self._print_info("[熔断] 检测到连续两轮调用完全相同的工具列表，强制终止以避免死循环")
             self.session.log_dict_info({
                 "role": "system",
@@ -1075,6 +1088,7 @@ class QueryLoop:
             # 纯 todowrite 轮：检查 todo 状态是否有变化
             current_todo_sig = self._todo_manager.todo_list.status_signature()
             if self._last_todo_sig is not None and self._last_todo_sig == current_todo_sig:
+                self.last_error = "连续两轮 TodoWrite 状态无变化，任务已熔断，未完成"
                 self._print_info("[熔断] 连续两轮纯 todowrite 且状态无变化，强制终止")
                 self.session.log_dict_info({
                     "role": "system",

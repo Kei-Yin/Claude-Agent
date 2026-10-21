@@ -4,6 +4,9 @@
 """
 import math
 import time
+from pathlib import Path
+
+from src.utility.config_loader import global_cfg
 
 from .embedding_config import load_embedding_config
 from .embedding_client import EmbeddingClient
@@ -11,8 +14,9 @@ from .faiss_store import FaissStore
 
 
 # 文件路径常量
-MEMORY_MD_PATH = "D:/AI/MyClaude/memory_storage/memory_ex/memory/MEMORY.md"
-INDEX_PATH = "D:/AI/MyClaude/memory_storage/memory_ex/memory/memory.index"
+_storage = global_cfg.memory_ex.storage
+MEMORY_MD_PATH = str(Path(_storage.base_dir) / _storage.layer1_file)
+INDEX_PATH = str(Path(MEMORY_MD_PATH).with_name("memory.index"))
 
 # 耗时估算基准：每批调用 GLM embedding API 约 2 秒（embedding API 远快于 LLM 提取）
 SECONDS_PER_BATCH = 2

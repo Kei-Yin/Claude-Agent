@@ -26,7 +26,7 @@ def find_project_root(start: Path, marker: str = "src") -> Path:
 
     # 遍历当前目录及其所有上级目录
     for path in [current] + list(current.parents):
-        if (path / marker).exists():
+        if (path / marker).exists() or (path / "config" / marker).is_file():
             return path
 
     # 如果按文件找不到，可以按目录名兜底（比如你固定叫 MyClaude）
@@ -50,6 +50,31 @@ def _deep_merge(base, override):
         else:
             result[k] = v
     return result
+
+
+def _resolve_config_paths(config: dict, repository_root: Path) -> dict:
+    """将配置中的相对目录解析为绝对路径，保留显式配置的绝对目录。"""
+    paths = config.setdefault("base_path", {})
+    project_root = Path(paths.get("project_root", ".")).expanduser()
+    if not project_root.is_absolute():
+        project_root = repository_root / project_root
+    project_root = project_root.resolve()
+    paths["project_root"] = project_root.as_posix()
+    for name, value in paths.items():
+        if name == "project_root" or not name.endswith("_root"):
+            continue
+        directory = Path(value).expanduser()
+        if not directory.is_absolute():
+            directory = project_root / directory
+        paths[name] = directory.resolve().as_posix()
+
+    storage = config.get("memory_ex", {}).get("storage", {})
+    if "base_dir" in storage:
+        directory = Path(storage["base_dir"]).expanduser()
+        if not directory.is_absolute():
+            directory = project_root / directory
+        storage["base_dir"] = directory.resolve().as_posix()
+    return config
 
 
 def load_config(config_yaml="config.yaml", model_key_yaml="model_key.yaml"):
@@ -112,7 +137,7 @@ def load_config(config_yaml="config.yaml", model_key_yaml="model_key.yaml"):
                         memory_config = {top_key: memory_raw}
                     merged = _deep_merge(memory_config, merged)
 
-    return _dict_to_namespace(merged)
+    return _dict_to_namespace(_resolve_config_paths(merged, base_dir))
 
 
 """

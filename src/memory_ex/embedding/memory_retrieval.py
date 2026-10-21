@@ -9,13 +9,9 @@ from typing import Any, Dict, List, Optional
 from .embedding_config import load_embedding_config
 from .embedding_client import EmbeddingClient
 from .faiss_store import FaissStore
-from .memory_embedding import parse_memory_entries
+from .memory_embedding import INDEX_PATH, MEMORY_MD_PATH, parse_memory_entries
 
 logger = logging.getLogger(__name__)
-
-# 文件路径常量
-MEMORY_MD_PATH = "D:/AI/MyClaude/memory_storage/memory_ex/memory/MEMORY.md"
-INDEX_PATH = "D:/AI/MyClaude/memory_storage/memory_ex/memory/memory.index"
 
 # 模块级缓存，避免重复加载
 _loaded_store: FaissStore = None

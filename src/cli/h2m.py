@@ -315,7 +315,7 @@ def convert_html_to_markdown(
             cfg = load_config()
             logs_root = cfg.base_path.logs_root
         except Exception:
-            logs_root = "D:/AI/MyClaude/log"
+            logs_root = str(Path(__file__).resolve().parents[2] / "log")
 
     turns = _parse_turns(turns_str or "")
     sections = _parse_sections(sections_str or "")

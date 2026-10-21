@@ -1,5 +1,4 @@
-pip install openai
-pip install rich prompt-toolkit
-pip install PyYAML
-pip install openpyxl
-pip install requests
+@echo off
+setlocal
+call conda run --no-capture-output -n LLMs python -m pip install -r "%~dp0requirements.txt"
+exit /b %errorlevel%

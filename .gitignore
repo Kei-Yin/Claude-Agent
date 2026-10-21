@@ -64,3 +64,6 @@ memory_storage/memory_ex/raw_memory/*
 node_modules/
 dist/
 *.log
+
+# 本地模型密钥，仅提交不含密钥的配置示例
+/config/model_key.yaml

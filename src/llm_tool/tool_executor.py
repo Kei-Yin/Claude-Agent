@@ -1128,7 +1128,9 @@ def execute_code_tool(tool):
 
         # 提取summary
         summary = p.get("summary", "")
-        if summary and summary.strip():
+        if not result_detail.startswith("已创建 "):
+            result = result_detail
+        elif summary and summary.strip():
             if len(summary) > 50:
                 summary = summary[:47] + "..."
             result = f"文件已创建：{p['path']}，摘要：{summary}"
@@ -1149,7 +1151,9 @@ def execute_code_tool(tool):
         else:
             result_detail = file_str_replace(code_output_root, p["path"], p["old"], p["new"])
             summary = p.get("summary", "")
-            if summary and summary.strip():
+            if not result_detail.startswith("已修改 "):
+                result = result_detail
+            elif summary and summary.strip():
                 if len(summary) > 50:
                     summary = summary[:47] + "..."
                 result = f"文件已修改：{p['path']}，摘要：{summary}"
@@ -1251,12 +1255,12 @@ def execute_code_tool(tool):
     # 返回 dict，不是 list
     if name == "bash":
         tool_result = {
-            "role": "system",
+            "role": "user",
             "content": f"[{name}] 工具执行结果：\n{result}"
         }
     else:
         tool_result = {
-            "role": "system",
+            "role": "user",
             "content": f"[{name}] 工具执行结果：{result}"
         }
 

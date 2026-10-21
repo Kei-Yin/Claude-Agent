@@ -97,7 +97,7 @@ class ContextCompressor:
             return config.context_compression
 
         # 尝试从独立 YAML 加载
-        config_path = Path("D:/AI/MyClaude/config/context_compression.yaml")
+        config_path = Path(__file__).resolve().parents[2] / "config" / "context_compression.yaml"
         if config_path.exists():
             try:
                 import yaml

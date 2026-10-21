@@ -1488,8 +1488,9 @@ class MyClaudeCLI:
                 stats = self.query_loop.clear_memory()
 
                 # 删除向量化索引文件及 ID 映射 sidecar
-                _index_path = _P("D:/AI/MyClaude/memory_storage/memory_ex/memory/memory.index")
-                _index_ids_path = _P("D:/AI/MyClaude/memory_storage/memory_ex/memory/memory.index.ids.json")
+                from src.memory_ex.embedding.memory_embedding import INDEX_PATH
+                _index_path = _P(INDEX_PATH)
+                _index_ids_path = _P(INDEX_PATH + ".ids.json")
                 _index_deleted = False
                 for _p in (_index_path, _index_ids_path):
                     if _p.exists():
@@ -2229,6 +2230,9 @@ class MyClaudeCLI:
                 capturing_print_tool_result,
                 cp.typewriter_then_collapse
             )
+            if self.query_loop.last_error:
+                test_data["exit_code"] = 1
+                test_data["error"] = self.query_loop.last_error
         except Exception as e:
             test_data["exit_code"] = 1
             test_data["error"] = str(e)
@@ -2264,6 +2268,7 @@ class MyClaudeCLI:
             cp.print_info(f"[测试模式] JSON 结果已输出到: {output_path}")
 
         cp.print_info("[测试模式] 执行完毕，退出。")
+        return test_data["exit_code"]
 
 
     def _run_unit_test_exec(self,

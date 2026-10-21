@@ -20,12 +20,12 @@ memory:
 
 # 项目基本目录结构
 base_path:
-  project_root: "D:/AI/MyClaude/"           # 项目根目录
-  code_output_root: "D:/AI/MyClaude/src/"   # AI 生成代码的默认输出目录
-  logs_root: "D:/AI/MyClaude/log/"          # log默认输出目录
-  backups_root: "D:/AI/MyClaude/backups/"   # 备份根目录
-  spec_root: "D:/AI/MyClaude/spec/"         # 需求规格根目录
-  skill_root: "D:/AI/MyClaude/skill/"       # skill根目录
+  project_root: "."           # 相对于配置所在仓库；加载时自动转为绝对路径
+  code_output_root: "src"      # 以下目录相对于 project_root
+  logs_root: "log"
+  backups_root: "backups"
+  spec_root: "spec"
+  skill_root: "skill"
 
 # 命令行界面配置
 cli:

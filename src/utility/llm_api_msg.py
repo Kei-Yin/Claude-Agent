@@ -234,4 +234,9 @@ class LLMAPIMessage:
 
     # 这是一个内部的简化实现
     def _append_info(self, msg):
+        # system 只用于开头的提示词；工具/记忆/纠错反馈必须作为下一轮输入。
+        if msg.get("role") == "system" and any(
+            item.get("role") in ("user", "assistant") for item in self.api_messages
+        ):
+            msg = {**msg, "role": "user", "content": f"[系统反馈]\n{msg['content']}"}
         self.api_messages.append(msg)

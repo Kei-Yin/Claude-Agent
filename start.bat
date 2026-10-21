@@ -1,7 +1,5 @@
-set http_proxy=***
-set https_proxy=***
-set NODE_TLS_REJECT_UNAUTHORIZED=0
-
-python -m src.myclaude
-
-
+@echo off
+setlocal
+cd /d "%~dp0"
+call conda run --no-capture-output -n LLMs python -X utf8 -m src.myclaude %*
+exit /b %errorlevel%

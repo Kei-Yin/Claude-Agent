@@ -358,7 +358,7 @@ class MemoryCompactor:
                     if reason == "same_tags":
                         # 追加非重复内容
                         if candidate["content"] not in merged_content:
-                            merged_content += f"；{candidate["content"]}"
+                            merged_content += f"；{candidate['content']}"
                     else:
                         # 重复：保留信息更完整的
                         if len(candidate["content"]) > len(merged_content):

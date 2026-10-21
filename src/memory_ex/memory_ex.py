@@ -19,7 +19,7 @@ from src.memory_ex.memory_store import MemoryStore
 from src.memory_ex.memory_extractor import MemoryExtractor
 from src.memory_ex.memory_compactor import MemoryCompactor
 from src.memory_ex.memory_evolver import MemoryEvolver
-from src.memory_ex.memory_retriever import MemoryRetriever
+from src.memory_ex.memory_retriever import MemoryRetriever, RetrievalResult
 from src.memory_ex.memory_injector import MemoryInjector
 
 logger = logging.getLogger(__name__)
@@ -46,13 +46,15 @@ def _load_memory_ex_config(config: Any) -> Any:
         return config.memory_ex
 
     # 降级：从 YAML 文件加载
-    config_path = Path("D:/AI/MyClaude/config/memory/memory_ex.yaml")
+    config_path = Path(__file__).resolve().parents[2] / "config" / "memory" / "memory_ex.yaml"
     if config_path.exists():
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 yaml_data = yaml.safe_load(f)
                 if yaml_data and "memory_ex" in yaml_data:
-                    return _dict_to_namespace(yaml_data["memory_ex"])
+                    from src.utility.config_loader import _resolve_config_paths
+                    resolved = _resolve_config_paths(yaml_data, config_path.parents[2])
+                    return _dict_to_namespace(resolved["memory_ex"])
         except Exception as e:
             logger.warning(f"加载 memory_ex.yaml 失败，使用默认值: {e}")
 
@@ -75,7 +77,7 @@ def _get_default_config() -> SimpleNamespace:
 
     return SimpleNamespace(
         storage=SimpleNamespace(
-            base_dir="D:/AI/MyClaude/memory_storage/memory_ex/",
+            base_dir=str(Path(__file__).resolve().parents[2] / "memory_storage" / "memory_ex"),
             layer1_file="memory/MEMORY.md",
             metadata_file="memory/metadata.json",
         ),

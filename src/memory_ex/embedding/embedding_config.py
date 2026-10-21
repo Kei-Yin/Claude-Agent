@@ -26,13 +26,13 @@ def load_embedding_config(config_path: str = None) -> EmbeddingConfig:
       2. 用 provider 值作为 key，读取同文件中对应的 API 连接参数
 
     Args:
-        config_path: model_key.yaml 的绝对路径，默认为 D:/AI/MyClaude/config/model_key.yaml
+        config_path: model_key.yaml 的绝对路径，默认读取当前仓库的 config/model_key.yaml
 
     Returns:
         EmbeddingConfig 配置对象
     """
     if config_path is None:
-        config_path = "D:/AI/MyClaude/config/model_key.yaml"
+        config_path = Path(__file__).resolve().parents[3] / "config" / "model_key.yaml"
 
     with open(config_path, "r", encoding="utf-8") as f:
         raw = yaml.safe_load(f)
